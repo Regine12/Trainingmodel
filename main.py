@@ -30,11 +30,35 @@ def home():
         file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)),app.config['UPLOAD_FOLDER'],secure_filename(file.filename))) # Then save the file
         
         # get image path
-        image = os.path.join(os.path.abspath(os.path.dirname(__file__)),app.config['UPLOAD_FOLDER'],secure_filename(file.filename))
+        _image = os.path.join(os.path.abspath(os.path.dirname(__file__)),app.config['UPLOAD_FOLDER'],secure_filename(file.filename))
+        image = cv2.imread(_image)
+        img_arr = Image.fromarray(image, 'RGB')
+        res_img = img_arr.resize((50,50))
+        # Make image loadadble into model
+        input_image = np.expand_dims(res_img,axis=0)
         # Load model and pass the image
+        model = tf.keras.models.load_model(os.path.dirname(__file__)+"/model.h5")
+        print("MM",os.path.dirname(__file__)+"/model.h5")
         
+        result = model.predict(input_image)
+        # 
+        label = str(np.argmax(result))
         # And Return Predictions
-        return image
+        if label == "0":
+            return "Cat"
+        elif label == "1":
+            return "Dog"
+        elif label == "2":
+            return "Monkey"
+        elif label == "3":
+            return "Parrot"
+        elif label == "4":
+            return "Elephant"
+        elif label == "5":
+            return "Bear"
+        else:
+            return "Error"
+        
     return render_template('index.html', form=form)
 
 if __name__ == '__main__':
