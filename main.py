@@ -21,8 +21,8 @@ class UploadFileForm(FlaskForm):
     file = FileField("File", validators=[InputRequired()])
     submit = SubmitField("Classify Image")
 
-#@app.route('/', methods=['GET',"POST"])
-@app.route('/home', methods=['GET',"POST"])
+@app.route('/', methods=['GET',"POST"])
+# @app.route('/home', methods=['GET',"POST"])
 def home():
     form = UploadFileForm()
     if form.validate_on_submit():
@@ -58,6 +58,8 @@ def home():
             return "Bear"
         else:
             return "Error"
+       
+    return render_template('index.html', form=form)
 
 if __name__ == '__main__':
     app.run(debug=True)
